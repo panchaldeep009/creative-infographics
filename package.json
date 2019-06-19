@@ -1,7 +1,7 @@
 {
   "name": "creative-infographics",
   "version": "1.0.2",
-  "description": "This is library of interactive infographics react components for challenging data scheme visualization.",
+  "description": "This is a library of interactive infographics react components for challenging data scheme visualization.",
   "main": "lib/index.js",
   "scripts": {
     "dev": "next",
