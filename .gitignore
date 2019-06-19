@@ -1,0 +1,4 @@
+node_modules
+*-lock.*
+.next
+lib
