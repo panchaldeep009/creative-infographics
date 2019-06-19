@@ -1,2 +1,5 @@
+src
 pages
 .next
+.babelrc
+webpack.config.js
