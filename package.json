@@ -1,0 +1,46 @@
+{
+  "name": "creative-infographics",
+  "version": "1.0.0",
+  "description": "This is library of interactive infographics react components for challenging data scheme visualization.",
+  "main": "lib/index.js",
+  "scripts": {
+    "dev": "next",
+    "build": "webpack",
+    "build:next": "next build",
+    "start": "next build && next start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/panchaldeep009/creative-infographics.git"
+  },
+  "keywords": [
+    "interactive",
+    "creative",
+    "info-graphic"
+  ],
+  "author": "Deep Panchal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/panchaldeep009/creative-infographics/issues"
+  },
+  "homepage": "https://github.com/panchaldeep009/creative-infographics#readme",
+  "peerDependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "lodash": "^4.17.11",
+    "next": "^8.1.0",
+    "prop-types": "^15.7.2",
+    "randomcolor": "^0.5.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4"
+  }
+}
