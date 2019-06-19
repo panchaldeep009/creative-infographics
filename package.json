@@ -1,6 +1,6 @@
 {
   "name": "creative-infographics",
-  "version": "1.0.1",
+  "version": "0.1.0",
   "description": "This is library of interactive infographics react components for challenging data scheme visualization.",
   "main": "lib/index.js",
   "scripts": {
@@ -25,12 +25,14 @@
     "url": "https://github.com/panchaldeep009/creative-infographics/issues"
   },
   "homepage": "https://github.com/panchaldeep009/creative-infographics#readme",
-  "peerDependencies": {
-    "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+  "dependencies": {
     "lodash": "^4.17.11",
-    "randomcolor": "^0.5.4"
+    "randomcolor": "^0.5.4",
+    "prop-types": "^15.7.2"
+  },
+  "peerDependencies": {
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   },
   "devDependencies": {
     "@babel/cli": "^7.4.4",
