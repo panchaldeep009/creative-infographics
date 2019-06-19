@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { FlowerGraph } from "../src";
+import { FlowerGraph } from "../lib";
 import movies from "./data/movies_data.json";
 
 const Home = () => {
