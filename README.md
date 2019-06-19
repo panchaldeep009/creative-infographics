@@ -49,12 +49,6 @@ For each infographic component there is fixed data schema and reaquired props, s
 import { FlowerGraph } from "creative-infographics";
 ```
 
-- component schema
-
-```jsx
-<FlowerGraph data={/* data */} label={/* key name of label */} term={/* key name of type */} />
-```
-
 #### Data schema for FlowerGraph
 
 - following data schema is required to render this infographic.
@@ -68,6 +62,12 @@ data /* array_of_objects */ = [
     },
     ...
 ]
+```
+
+- component schema
+
+```jsx
+<FlowerGraph data={/* data */} label={/* key name of label */} term={/* key name of type */} />
 ```
 
 ### Props
