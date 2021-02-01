@@ -1,15 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import randomColors from 'randomcolor';
-import { ColorOptions } from './types';
+import { ColorOptions, Position } from './types';
 import { Legend, LegendOptions } from './Legend';
+import { Roots, RootsOptions } from './Roots';
 
 export interface GraphProps<Data extends Record<string | number, unknown>> extends ColorOptions {
   data: Data[],
   labelAccessor: ((data: Data) => string),
   typeAccessor: ((data: Data) => string[]),
-  legendOptions?: LegendOptions
+  legendOptions?: LegendOptions,
+  rootOptions?: RootsOptions,
   fontSize?: number,
   offFocuseOpacity?: number,
+  graphRotation?: number,
+  graphPosition?: Position
 }
 
 type GraphComponent = <
@@ -21,11 +25,17 @@ export const Graph: GraphComponent = ({
   data,
   typeAccessor,
   labelAccessor,
-  luminosity = 'bright',
   hue,
-  fontSize = 6,
   legendOptions,
-  offFocuseOpacity = 0.4
+  rootOptions,
+  luminosity = 'bright',
+  fontSize = 6,
+  offFocuseOpacity = 0.4,
+  graphRotation = 45,
+  graphPosition = {
+    x: 300,
+    y: 400
+  }
 }) => {
   const [hoveredType, setHoveredType] = useState<string>(undefined)
 
@@ -74,6 +84,26 @@ export const Graph: GraphComponent = ({
         onLegendHover={setHoveredType}
         onLegendBlur={() => setHoveredType(undefined)}
       />
+      <g
+        name="Graph"
+        transform={`
+          rotate(
+            ${graphRotation},
+            ${graphPosition.x},
+            ${graphPosition.y}
+          )
+        `}
+      >
+        <Roots 
+          types={legendData}
+          offFocuseOpacity={offFocuseOpacity}
+          rootsOptions={rootOptions}
+          graphPosition={graphPosition}
+          hoveredRoot={hoveredType}
+          onRootHover={setHoveredType}
+          onRootBlur={() => setHoveredType(undefined)}
+        />
+      </g>
     </svg>
   );
 }

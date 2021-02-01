@@ -8,5 +8,7 @@ export default {
 };
 
 export const primary = () => {
-  return <Graph data={data} labelAccessor={data => data.Title} typeAccessor={data => data.Genre?.split(', ') || []} />;
+  return <div style={{ height: '100vh' }}>
+    <Graph data={data} labelAccessor={data => data.Title} typeAccessor={data => data.Genre?.split(', ') || []} />;
+  </div>
 };
