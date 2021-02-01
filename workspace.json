@@ -1,9 +1,59 @@
 {
-  
-  
   "version": 2,
-  
-  "projects": {},
+  "projects": {
+    "flower-graph": {
+      "root": "libs/flower-graph",
+      "sourceRoot": "libs/flower-graph/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "libs/flower-graph/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "build": {
+          "executor": "@nrwl/web:package",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/libs/flower-graph",
+            "tsConfig": "libs/flower-graph/tsconfig.lib.json",
+            "project": "libs/flower-graph/package.json",
+            "entryFile": "libs/flower-graph/src/index.ts",
+            "external": [
+              "react",
+              "react-dom",
+              "@emotion/styled",
+              "@emotion/react"
+            ],
+            "babelConfig": "@nrwl/react/plugins/bundle-babel",
+            "rollupConfig": "@nrwl/react/plugins/bundle-rollup",
+            "assets": [
+              {
+                "glob": "README.md",
+                "input": ".",
+                "output": "."
+              }
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/libs/flower-graph"
+          ],
+          "options": {
+            "jestConfig": "libs/flower-graph/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
   "cli": {
     "defaultCollection": "@nrwl/workspace"
   }
