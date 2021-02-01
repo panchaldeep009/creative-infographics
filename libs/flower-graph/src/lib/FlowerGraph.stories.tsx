@@ -1,14 +1,12 @@
 import React from 'react';
-import { FlowerGraph, FlowerGraphProps } from './FlowerGraph';
+import { Graph } from './Graph';
+import data from './../test-data/movies';
 
 export default {
-  component: FlowerGraph,
+  component: Graph,
   title: 'FlowerGraph',
 };
 
 export const primary = () => {
-  /* eslint-disable-next-line */
-  const props: FlowerGraphProps = {};
-
-  return <FlowerGraph />;
+  return <Graph data={data} labelAccessor={data => data.Title} typeAccessor={data => data.Genre?.split(', ') || []} />;
 };
