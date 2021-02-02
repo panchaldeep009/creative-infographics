@@ -1,5 +1,6 @@
 import React from 'react';
 import { Position } from './types';
+import { getSplitCirclePosition } from './utilities';
 
 export interface PetalsProps {
   graphPosition: Position;
@@ -15,6 +16,20 @@ export const Petals: React.FC<PetalsProps> = ({
 
   return (
     <g name="Petals">
+      {[...Array(petalsNumber)].map(
+        (_,i) => {
+          const { x, y } = getSplitCirclePosition(petalsNumber, i, flowerInnerRadius);
+          return (
+            <circle
+              cx={x + graphPosition.x}
+              cy={y + graphPosition.y}
+              r={60}
+              fill="none"
+              stroke="red"
+            />
+          );
+        }
+      )}
       <circle
         cx={graphPosition.x}
         cy={graphPosition.y}
