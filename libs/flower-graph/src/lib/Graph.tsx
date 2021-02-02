@@ -1,10 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import randomColors from 'randomcolor';
-import { ColorOptions, Position } from './types';
+import { CircleOptions, ColorOptions, Position } from './types';
 import { Legend, LegendOptions } from './Legend';
 import { Roots, RootsOptions } from './Roots';
 import { Petals, PetalsOptions } from './Petals';
-
 export interface GraphProps<Data extends Record<string | number, unknown>> extends ColorOptions {
   data: Data[],
   labelAccessor: ((data: Data) => string),
@@ -18,7 +17,7 @@ export interface GraphProps<Data extends Record<string | number, unknown>> exten
   offFocuseOpacity?: number,
   graphRotation?: number,
   graphPosition?: Partial<Position>,
-  flowerInnerRadius?: number;
+  innerCircle?: Partial<CircleOptions>
 }
 
 type GraphComponent = <
@@ -41,7 +40,7 @@ export const Graph: GraphComponent = ({
   fontSize = 6,
   offFocuseOpacity = 0.4,
   graphRotation = 45,
-  flowerInnerRadius = 195,
+  innerCircle,
 }) => {
   const [hoveredType, setHoveredType] = useState<string>(undefined);
   const graphPosition = useMemo(() => ({
@@ -105,7 +104,7 @@ export const Graph: GraphComponent = ({
         `}
       >
         <Petals 
-          flowerInnerRadius={flowerInnerRadius}
+          innerCircle={innerCircle}
           position={graphPosition}
           options={petalsOptions}
         />

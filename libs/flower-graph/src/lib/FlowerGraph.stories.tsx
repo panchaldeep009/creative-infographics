@@ -8,6 +8,7 @@ import { Hue } from './types';
 const hues = [undefined, 'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'monochrome'];
 
 const graphPropsGroupId = 'props';
+const innerCircleGroupId = 'innerCircle';
 const petalsOptionsGroupId = 'petalsOptions';
 const rootsOptionsGroupId = 'rootsOptions';
 const legendOptionsGroupId = 'legendOptions';
@@ -30,7 +31,10 @@ export const MoviesAndGenres: Story = () => {
         x: number('graphPosition.x', undefined, {}, graphPropsGroupId),
         y: number('graphPosition.y', undefined, {}, graphPropsGroupId)
       }}
-      flowerInnerRadius={number('flowerInnerRadius', 195, { step: 1, min: 10, max: 300, range: true }, graphPropsGroupId)}
+      innerCircle={{
+        radius: number('radius', 195, { step: 1, min: 10, max: 300, range: true }, innerCircleGroupId),
+        radianOffset: number('radianOffset', undefined, { step: 1, min: -360, max: 360, range: true }, innerCircleGroupId)
+      }}
       graphRotation={number('graphRotation', 45, { step: 1, min: -360, max: 360, range: true }, graphPropsGroupId)}
       offFocuseOpacity={number('offFocuseOpacity', 0.4, { step: 0.1, min: 0, max: 1, range: true }, graphPropsGroupId)}
       luminosity={radios('luminosity', { Bright: 'bright', Dark: 'dark' }, 'bright', graphPropsGroupId)}
@@ -49,8 +53,9 @@ export const MoviesAndGenres: Story = () => {
       }}
       petalsOptions={{
         count: number('count', 6, { step: 1, range: true, max: 30 }, petalsOptionsGroupId),
-        radius: number('radius', undefined, { step: 1, min: 0, max: 300, range: true }, petalsOptionsGroupId)
+        radius: number('radius', undefined, { step: 1, min: 0, max: 300, range: true }, petalsOptionsGroupId),
+        rotate: number('rotate', undefined, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
       }}
-    />;
+    />
   </div>
 };

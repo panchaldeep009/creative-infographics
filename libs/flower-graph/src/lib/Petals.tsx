@@ -1,37 +1,44 @@
 import React, { useMemo } from 'react';
-import { Position } from './types';
+import { CircleOptions, Position } from './types';
 import { getSplitCirclePosition } from './utilities';
 
-export interface PetalsOptions {
-  radius?: number;
+export interface PetalsOptions extends Partial<CircleOptions> {
   count?: number;
+  rotate?: number;
 }
 
 export interface PetalsProps {
   position: Position;
-  flowerInnerRadius: number;
+  innerCircle?: Partial<CircleOptions>;
   options?: PetalsOptions
 }
 
 export const Petals: React.FC<PetalsProps> = ({
-  flowerInnerRadius,
+  innerCircle,
   position,
   options
 }) => {
 
   const {
     radius,
-    count
+    count,
+    rotate,
+    innerCircleRadianOffset,
+    innerCircleRadius
   } = useMemo(() => ({
-    radius: options?.radius || 55,
-    count: options?.count || 6
-  }), [options]);
+    radius: options?.radius ?? 55,
+    count: options?.count ?? 6,
+    rotate: options?.rotate ?? 0,
+    radianOffset: options.radianOffset ?? 0,
+    innerCircleRadianOffset: innerCircle?.radianOffset ?? 0,
+    innerCircleRadius: innerCircle?.radius ?? 195
+  }), [options, innerCircle]);
 
   return (
     <g name="Petals">
       {[...Array(count)].map(
         (_,i) => {
-          const { x, y } = getSplitCirclePosition(count, i, flowerInnerRadius);
+          const { x, y } = getSplitCirclePosition(count, i, innerCircleRadius, rotate, innerCircleRadianOffset);
           return (
             <circle
               cx={x + position.x}
@@ -46,7 +53,7 @@ export const Petals: React.FC<PetalsProps> = ({
       <circle
         cx={position.x}
         cy={position.y}
-        r={flowerInnerRadius}
+        r={innerCircleRadius}
         fill="none"
         stroke="black"
       />

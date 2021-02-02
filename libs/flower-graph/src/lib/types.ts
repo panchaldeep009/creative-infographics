@@ -7,3 +7,8 @@ export type Position = {
   x: number,
   y: number
 }
+
+export type CircleOptions = {
+  radius: number,
+  radianOffset: number
+}
