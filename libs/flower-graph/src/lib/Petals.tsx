@@ -5,6 +5,9 @@ import { chunkArray, getSplitCirclePosition } from './utilities';
 export interface PetalsOptions extends Partial<CircleOptions> {
   count?: number;
   typeIndicatorRadius?: number;
+  labelLineLength?: number;
+  labelLineColor?: string;
+  labelLineDistance?: number;
 }
 export interface PetalsProps {
   data: {
@@ -30,19 +33,25 @@ export const Petals: React.FC<PetalsProps> = ({
     count,
     rotation,
     radianOffset,
-    innerCircleRadianOffset,
+    labelLineColor,
+    labelLineLength,
+    labelLineDistance,
     innerCircleRadius,
     innerCircleRotation,
     typeIndicatorRadius,
+    innerCircleRadianOffset,
   } = useMemo(() => ({
-    radius: options?.radius ?? 55,
     count: options?.count ?? 6,
+    radius: options?.radius ?? 55,
     rotation: options?.rotation ?? 0,
     radianOffset: options?.radianOffset ?? 0,
+    innerCircleRadius: innerCircle?.radius ?? 195,
+    labelLineLength: options?.labelLineLength ?? 4,
+    innerCircleRotation: innerCircle?.rotation ?? 0,
+    labelLineColor: options?.labelLineColor ?? 'red',
+    labelLineDistance: options?.labelLineDistance ?? 4,
     typeIndicatorRadius: options?.typeIndicatorRadius ?? 3,
     innerCircleRadianOffset: innerCircle?.radianOffset ?? 0,
-    innerCircleRadius: innerCircle?.radius ?? 195,
-    innerCircleRotation: innerCircle?.rotation ?? 0,
   }), [options, innerCircle]);
   
   const dataChunks = useMemo(() =>
@@ -94,41 +103,69 @@ export const Petals: React.FC<PetalsProps> = ({
       })
   , [count, dataChunksWithPosition, innerCircleRadianOffset, radianOffset, radius, rotation, typeIndicatorRadius]);
 
+  const dataChunksWithLinePosition = useMemo(() =>
+    dataChunksWithTypesPosition
+      .map((chunk, chunkIndex) => {
+        const rotationOffset = (((360 - innerCircleRadianOffset) / count) * chunkIndex);
+          return {
+          ...chunk,
+          data: chunk.data.map((entry, entryIndex) => {
+            const startPos = getSplitCirclePosition(
+              chunk.data.length,
+              entryIndex,
+              radius + labelLineDistance,
+              rotation + rotationOffset,
+              radianOffset
+            );
+            const endPos = getSplitCirclePosition(
+              chunk.data.length,
+              entryIndex,
+              radius + labelLineDistance + labelLineLength,
+              rotation + rotationOffset,
+              radianOffset
+            );
+            return ({
+              ...entry,
+              line: {
+                x1: startPos.x + chunk.petalCircleX,
+                y1: startPos.y + chunk.petalCircleY,
+                x2: endPos.x + chunk.petalCircleX,
+                y2: endPos.y + chunk.petalCircleY,
+              }
+            })
+          })
+        }
+      })
+  , [count, dataChunksWithTypesPosition, innerCircleRadianOffset, labelLineDistance, labelLineLength, radianOffset, radius, rotation]);
+
+
   return (
     <g name="Petals">
-      {dataChunksWithTypesPosition.map(
-        ({data, petalCircleX, petalCircleY}, i) => (
+      {dataChunksWithLinePosition.map(
+        ({ data }, i) => (
             <g key={`petal_${i}`}>
-              <circle
-                cx={petalCircleX}
-                cy={petalCircleY}
-                r={radius}
-                fill="none"
-                stroke="red"
-              />
-              {data.map(({ label, types }) => (
-                <g name={`${label}_types`} key={`${label}_types`}>
-                  {types.map(({type, color, pos}) => (
-                    <circle
-                      key={`${label}_${type}`}
-                      fill={color}
-                      r={typeIndicatorRadius}
-                      cx={pos.x}
-                      cy={pos.y}
-                    />
-                  ))}
+              {data.map(({ label, types, line }) => (
+                <g name={label} key={label}>
+                  <line 
+                    {...line}
+                    stroke={labelLineColor}
+                  />
+                  <g name={`${label}_types`} key={`${label}_types`}>
+                    {types.map(({type, color, pos}) => (
+                      <circle
+                        key={`${label}_${type}`}
+                        fill={color}
+                        r={typeIndicatorRadius}
+                        cx={pos.x}
+                        cy={pos.y}
+                      />
+                    ))}
+                  </g>
                 </g>
               ))}
             </g>
           )
         )}
-      <circle
-        cx={position.x}
-        cy={position.y}
-        r={innerCircleRadius}
-        fill="none"
-        stroke="black"
-      />
     </g>
   );
 }
