@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Position } from './types';
 import { getSplitCirclePosition } from './utilities';
+
+export interface PetalsOptions {
+  radius?: number;
+}
 
 export interface PetalsProps {
   graphPosition: Position;
   petalsNumber: number;
   flowerInnerRadius: number;
+  options?: PetalsOptions
 }
 
 export const Petals: React.FC<PetalsProps> = ({
   petalsNumber,
   flowerInnerRadius,
   graphPosition,
+  options
 }) => {
+
+  const {
+    radius,
+  } = useMemo(() => ({
+    radius: options?.radius || 55
+  }), [options]);
 
   return (
     <g name="Petals">
@@ -23,7 +35,7 @@ export const Petals: React.FC<PetalsProps> = ({
             <circle
               cx={x + graphPosition.x}
               cy={y + graphPosition.y}
-              r={60}
+              r={radius}
               fill="none"
               stroke="red"
             />

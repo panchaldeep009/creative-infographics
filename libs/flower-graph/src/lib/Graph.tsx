@@ -3,18 +3,21 @@ import randomColors from 'randomcolor';
 import { ColorOptions, Position } from './types';
 import { Legend, LegendOptions } from './Legend';
 import { Roots, RootsOptions } from './Roots';
-import { Petals } from './Petals';
+import { Petals, PetalsOptions } from './Petals';
 
 export interface GraphProps<Data extends Record<string | number, unknown>> extends ColorOptions {
   data: Data[],
   labelAccessor: ((data: Data) => string),
   typeAccessor: ((data: Data) => string[]),
+  width?: number,
+  height?: number,
   legendOptions?: LegendOptions,
   rootOptions?: RootsOptions,
+  petalsOptions?: PetalsOptions,
   fontSize?: number,
   offFocuseOpacity?: number,
   graphRotation?: number,
-  graphPosition?: Position,
+  graphPosition?: Partial<Position>,
   petalsNumber?: number;
   flowerInnerRadius?: number;
 }
@@ -30,19 +33,23 @@ export const Graph: GraphComponent = ({
   labelAccessor,
   hue,
   legendOptions,
+  petalsOptions,
   rootOptions,
+  graphPosition: graphPositionProp,
+  width = 600,
+  height = 700,
   luminosity = 'bright',
   fontSize = 6,
   offFocuseOpacity = 0.4,
   graphRotation = 45,
-  graphPosition = {
-    x: 300,
-    y: 400
-  },
   flowerInnerRadius = 195,
   petalsNumber = 6
 }) => {
-  const [hoveredType, setHoveredType] = useState<string>(undefined)
+  const [hoveredType, setHoveredType] = useState<string>(undefined);
+  const graphPosition = useMemo(() => ({
+    x: graphPositionProp.x || width / 2,
+    y: graphPositionProp.y || ((height - 100) / 2) + 100
+  }), [graphPositionProp, height, width])
 
   const types = useMemo(() => 
     data
@@ -103,6 +110,7 @@ export const Graph: GraphComponent = ({
           flowerInnerRadius={flowerInnerRadius}
           petalsNumber={petalsNumber}
           graphPosition={graphPosition}
+          options={petalsOptions}
         />
         <Roots 
           types={legendData}

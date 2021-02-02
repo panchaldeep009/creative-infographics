@@ -3,7 +3,7 @@ import { ColorOptions } from './types';
 
 export interface LegendOptions {
   fontColor?: string;
-  fontSize?: string;
+  fontSize?: number;
   spacing?: number;
   offFocuseOpacity?: number;
   indicatorRadius?: number
@@ -42,7 +42,7 @@ export const Legend: React.FC<LegendProps> = ({
   } = useMemo(() => ({
     spacing: legendOptions?.spacing || 15,
     fontSize: legendOptions?.fontSize || globalFontSize,
-    fontColor: legendOptions?.fontColor || luminosity === 'dark' ? '#e5e5e5' : '#333333',
+    fontColor: legendOptions?.fontColor || (luminosity === 'dark' ? '#e5e5e5' : '#333333'),
     offFocusOpacity: legendOptions?.offFocuseOpacity || globalOffFocusOpacity || 1,
     indicatorRadius: legendOptions?.indicatorRadius || 5
   }), [legendOptions, globalFontSize, globalOffFocusOpacity, luminosity]);
