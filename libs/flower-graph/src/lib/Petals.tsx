@@ -4,10 +4,12 @@ import { chunkArray, getSplitCirclePosition } from './utilities';
 
 export interface PetalsOptions extends Partial<CircleOptions> {
   count?: number;
-  typeIndicatorRadius?: number;
-  labelLineLength?: number;
+  labelColor?: string;
+  labelFontSize?: number,
   labelLineColor?: string;
+  labelLineLength?: number;
   labelLineDistance?: number;
+  typeIndicatorRadius?: number;
 }
 export interface PetalsProps {
   data: {
@@ -16,8 +18,9 @@ export interface PetalsProps {
       type: string,
       color: string
     }[]
-  }[]
+  }[],
   position: Position;
+  fontSize?: number;
   innerCircle?: Partial<CircleOptions>;
   options?: PetalsOptions
 }
@@ -25,13 +28,16 @@ export interface PetalsProps {
 export const Petals: React.FC<PetalsProps> = ({
   data,
   innerCircle,
+  fontSize: globalFontSize,
   position,
   options
 }) => {
   const {
-    radius,
     count,
+    radius,
+    fontSize,
     rotation,
+    labelColor,
     radianOffset,
     labelLineColor,
     labelLineLength,
@@ -45,14 +51,16 @@ export const Petals: React.FC<PetalsProps> = ({
     radius: options?.radius ?? 55,
     rotation: options?.rotation ?? 0,
     radianOffset: options?.radianOffset ?? 0,
+    labelColor: options?.labelLineColor ?? '#333',
     innerCircleRadius: innerCircle?.radius ?? 195,
     labelLineLength: options?.labelLineLength ?? 4,
     innerCircleRotation: innerCircle?.rotation ?? 0,
     labelLineColor: options?.labelLineColor ?? 'red',
     labelLineDistance: options?.labelLineDistance ?? 4,
     typeIndicatorRadius: options?.typeIndicatorRadius ?? 3,
+    fontSize: options?.labelFontSize ?? globalFontSize ?? 6,
     innerCircleRadianOffset: innerCircle?.radianOffset ?? 0,
-  }), [options, innerCircle]);
+  }), [options, innerCircle, globalFontSize]);
   
   const dataChunks = useMemo(() =>
     chunkArray(data, count)
@@ -103,11 +111,12 @@ export const Petals: React.FC<PetalsProps> = ({
       })
   , [count, dataChunksWithPosition, innerCircleRadianOffset, radianOffset, radius, rotation, typeIndicatorRadius]);
 
-  const dataChunksWithLinePosition = useMemo(() =>
+  const dataChunksWithLineAndTextPosition = useMemo(() =>
     dataChunksWithTypesPosition
       .map((chunk, chunkIndex) => {
         const rotationOffset = (((360 - innerCircleRadianOffset) / count) * chunkIndex);
-          return {
+        const textRotation =  (-(radianOffset - 360) / chunk.data.length);
+        return {
           ...chunk,
           data: chunk.data.map((entry, entryIndex) => {
             const startPos = getSplitCirclePosition(
@@ -131,6 +140,17 @@ export const Petals: React.FC<PetalsProps> = ({
                 y1: startPos.y + chunk.petalCircleY,
                 x2: endPos.x + chunk.petalCircleX,
                 y2: endPos.y + chunk.petalCircleY,
+              },
+              text: {
+                x: chunk.petalCircleX + radius + labelLineLength + labelLineDistance + 2,
+                y: chunk.petalCircleY,
+                rotation: `
+                  rotate(
+                    ${((textRotation) * entryIndex) + rotationOffset + rotation},
+                    ${chunk.petalCircleX},
+                    ${chunk.petalCircleY}
+                  )
+                `
               }
             })
           })
@@ -141,11 +161,20 @@ export const Petals: React.FC<PetalsProps> = ({
 
   return (
     <g name="Petals">
-      {dataChunksWithLinePosition.map(
-        ({ data }, i) => (
+      {dataChunksWithLineAndTextPosition.map(
+        ({ data, petalCircleY, petalCircleX }, i) => (
             <g key={`petal_${i}`}>
-              {data.map(({ label, types, line }) => (
+              {data.map(({ label, types, line, text }) => (
                 <g name={label} key={label}>
+                  <text
+                    x={text.x}
+                    y={text.y}
+                    fill={labelColor}
+                    transform={text.rotation}
+                    fontSize={fontSize}
+                  >
+                    {label}
+                  </text>
                   <line 
                     {...line}
                     stroke={labelLineColor}

@@ -108,6 +108,7 @@ export const Graph: GraphComponent = ({
           innerCircle={innerCircle}
           position={graphPosition}
           options={petalsOptions}
+          fontSize={fontSize}
         />
         <Roots 
           types={legendData}

@@ -21,7 +21,7 @@ export default {
 export const MoviesAndGenres: Story = () => {
   return <div style={{ height: '100vh' }}>
     <Graph 
-      data={data}
+      data={data.filter(d => d.Genre?.length)}
       labelAccessor={data => data.Title}
       typeAccessor={data => data.Genre?.split(', ') || []} 
       fontSize={number('fontSize', 6, {}, graphPropsGroupId)}
@@ -61,6 +61,7 @@ export const MoviesAndGenres: Story = () => {
         labelLineColor: color('labelLineColor', undefined, petalsOptionsGroupId),
         labelLineLength: number('labelLineLength', 5, { step: 1, range: true, max: 30 }, petalsOptionsGroupId),
         labelLineDistance: number('labelLineDistance', 3, { step: 1, range: true, max: 10 }, petalsOptionsGroupId),
+        labelFontSize: number('labelFontSize',  undefined, {}, petalsOptionsGroupId)
       }}
     />
   </div>
