@@ -50,7 +50,7 @@ export const Graph: GraphComponent = ({
 
   const types = useMemo(() => 
     data
-      .reduce((acc, current) => ([...acc, ...(typeAccessor(current))]), [])
+      .reduce((acc, current) => ([...acc, ...(typeAccessor(current))]), [] as string[])
       .filter((type, index, allData) => allData.indexOf(type) === index)
   , [data, typeAccessor]);
 
@@ -103,7 +103,8 @@ export const Graph: GraphComponent = ({
           )
         `}
       >
-        <Petals 
+        <Petals
+          data={mappedData}
           innerCircle={innerCircle}
           position={graphPosition}
           options={petalsOptions}

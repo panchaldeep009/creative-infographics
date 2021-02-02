@@ -32,8 +32,9 @@ export const MoviesAndGenres: Story = () => {
         y: number('graphPosition.y', undefined, {}, graphPropsGroupId)
       }}
       innerCircle={{
-        radius: number('radius', 195, { step: 1, min: 10, max: 300, range: true }, innerCircleGroupId),
-        radianOffset: number('radianOffset', undefined, { step: 1, min: -360, max: 360, range: true }, innerCircleGroupId)
+        radius: number('radius', 195, { step: 1, min: 0, max: 300, range: true }, innerCircleGroupId),
+        radianOffset: number('radianOffset', undefined, { step: 1, min: -360, max: 360, range: true }, innerCircleGroupId),
+        rotation: number('rotate', undefined, { step: 1, min: -360, max: 360, range: true }, innerCircleGroupId),
       }}
       graphRotation={number('graphRotation', 45, { step: 1, min: -360, max: 360, range: true }, graphPropsGroupId)}
       offFocuseOpacity={number('offFocuseOpacity', 0.4, { step: 0.1, min: 0, max: 1, range: true }, graphPropsGroupId)}
@@ -53,8 +54,10 @@ export const MoviesAndGenres: Story = () => {
       }}
       petalsOptions={{
         count: number('count', 6, { step: 1, range: true, max: 30 }, petalsOptionsGroupId),
+        typeIndicatorRadius: number('typeIndicatorRadius', 3, { step: 1, range: true, max: 10, min: 1 }, petalsOptionsGroupId),
         radius: number('radius', undefined, { step: 1, min: 0, max: 300, range: true }, petalsOptionsGroupId),
-        rotate: number('rotate', undefined, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
+        radianOffset: number('radianOffset', undefined, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
+        rotation: number('rotate', undefined, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
       }}
     />
   </div>
