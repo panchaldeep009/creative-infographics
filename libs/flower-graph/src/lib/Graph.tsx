@@ -3,6 +3,7 @@ import randomColors from 'randomcolor';
 import { ColorOptions, Position } from './types';
 import { Legend, LegendOptions } from './Legend';
 import { Roots, RootsOptions } from './Roots';
+import { Petals } from './Petals';
 
 export interface GraphProps<Data extends Record<string | number, unknown>> extends ColorOptions {
   data: Data[],
@@ -13,7 +14,9 @@ export interface GraphProps<Data extends Record<string | number, unknown>> exten
   fontSize?: number,
   offFocuseOpacity?: number,
   graphRotation?: number,
-  graphPosition?: Position
+  graphPosition?: Position,
+  petalsNumber?: number;
+  flowerInnerRadius?: number;
 }
 
 type GraphComponent = <
@@ -35,7 +38,9 @@ export const Graph: GraphComponent = ({
   graphPosition = {
     x: 300,
     y: 400
-  }
+  },
+  flowerInnerRadius = 195,
+  petalsNumber = 6
 }) => {
   const [hoveredType, setHoveredType] = useState<string>(undefined)
 
@@ -94,6 +99,11 @@ export const Graph: GraphComponent = ({
           )
         `}
       >
+        <Petals 
+          flowerInnerRadius={flowerInnerRadius}
+          petalsNumber={petalsNumber}
+          graphPosition={graphPosition}
+        />
         <Roots 
           types={legendData}
           offFocuseOpacity={offFocuseOpacity}
