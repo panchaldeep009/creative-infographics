@@ -4,37 +4,38 @@ import { getSplitCirclePosition } from './utilities';
 
 export interface PetalsOptions {
   radius?: number;
+  count?: number;
 }
 
 export interface PetalsProps {
-  graphPosition: Position;
-  petalsNumber: number;
+  position: Position;
   flowerInnerRadius: number;
   options?: PetalsOptions
 }
 
 export const Petals: React.FC<PetalsProps> = ({
-  petalsNumber,
   flowerInnerRadius,
-  graphPosition,
+  position,
   options
 }) => {
 
   const {
     radius,
+    count
   } = useMemo(() => ({
-    radius: options?.radius || 55
+    radius: options?.radius || 55,
+    count: options?.count || 6
   }), [options]);
 
   return (
     <g name="Petals">
-      {[...Array(petalsNumber)].map(
+      {[...Array(count)].map(
         (_,i) => {
-          const { x, y } = getSplitCirclePosition(petalsNumber, i, flowerInnerRadius);
+          const { x, y } = getSplitCirclePosition(count, i, flowerInnerRadius);
           return (
             <circle
-              cx={x + graphPosition.x}
-              cy={y + graphPosition.y}
+              cx={x + position.x}
+              cy={y + position.y}
               r={radius}
               fill="none"
               stroke="red"
@@ -43,8 +44,8 @@ export const Petals: React.FC<PetalsProps> = ({
         }
       )}
       <circle
-        cx={graphPosition.x}
-        cy={graphPosition.y}
+        cx={position.x}
+        cy={position.y}
         r={flowerInnerRadius}
         fill="none"
         stroke="black"

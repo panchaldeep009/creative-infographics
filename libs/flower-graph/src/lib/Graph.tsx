@@ -12,13 +12,12 @@ export interface GraphProps<Data extends Record<string | number, unknown>> exten
   width?: number,
   height?: number,
   legendOptions?: LegendOptions,
-  rootOptions?: RootsOptions,
+  rootsOptions?: RootsOptions,
   petalsOptions?: PetalsOptions,
   fontSize?: number,
   offFocuseOpacity?: number,
   graphRotation?: number,
   graphPosition?: Partial<Position>,
-  petalsNumber?: number;
   flowerInnerRadius?: number;
 }
 
@@ -34,7 +33,7 @@ export const Graph: GraphComponent = ({
   hue,
   legendOptions,
   petalsOptions,
-  rootOptions,
+  rootsOptions,
   graphPosition: graphPositionProp,
   width = 600,
   height = 700,
@@ -43,7 +42,6 @@ export const Graph: GraphComponent = ({
   offFocuseOpacity = 0.4,
   graphRotation = 45,
   flowerInnerRadius = 195,
-  petalsNumber = 6
 }) => {
   const [hoveredType, setHoveredType] = useState<string>(undefined);
   const graphPosition = useMemo(() => ({
@@ -108,15 +106,14 @@ export const Graph: GraphComponent = ({
       >
         <Petals 
           flowerInnerRadius={flowerInnerRadius}
-          petalsNumber={petalsNumber}
-          graphPosition={graphPosition}
+          position={graphPosition}
           options={petalsOptions}
         />
         <Roots 
           types={legendData}
           offFocuseOpacity={offFocuseOpacity}
-          rootsOptions={rootOptions}
-          graphPosition={graphPosition}
+          options={rootsOptions}
+          position={graphPosition}
           hoveredRoot={hoveredType}
           onRootHover={setHoveredType}
           onRootBlur={() => setHoveredType(undefined)}

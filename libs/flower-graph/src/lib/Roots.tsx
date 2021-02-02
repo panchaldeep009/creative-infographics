@@ -13,20 +13,20 @@ export interface RootsProps {
     color: string,
     count: number,
   }[];
-  graphPosition: Position;
+  position: Position;
   offFocuseOpacity?: number;
   hoveredRoot?: string;
-  rootsOptions?: RootsOptions;
+  options?: RootsOptions;
   onRootHover?: (type?: string) => void;
   onRootBlur?: () => void;
 }
 
 export const Roots: React.FC<RootsProps> = ({
   types,
-  rootsOptions,
+  options,
   offFocuseOpacity: globalOffFocusOpacity,
   hoveredRoot,
-  graphPosition,
+  position,
   onRootHover,
   onRootBlur
 }) => {
@@ -35,10 +35,10 @@ export const Roots: React.FC<RootsProps> = ({
     rootsSpacing,
     rootMaxRadius,
   } = useMemo(() => ({
-    offFocusOpacity: rootsOptions?.offFocuseOpacity || globalOffFocusOpacity || 1,
-    rootMaxRadius: rootsOptions?.rootMaxRadius || 20,
-    rootsSpacing: rootsOptions?.spacing || 2
-  }), [rootsOptions,  globalOffFocusOpacity]);
+    offFocusOpacity: options?.offFocuseOpacity ?? globalOffFocusOpacity ?? 0.5,
+    rootMaxRadius: options?.rootMaxRadius || 20,
+    rootsSpacing: options?.spacing || 2
+  }), [options,  globalOffFocusOpacity]);
 
   const maxCount = useMemo(() => Math.max(...types.map(type => type.count || 0)),[types]);
 
@@ -58,17 +58,17 @@ export const Roots: React.FC<RootsProps> = ({
           offsetX
         }
       }),
-      graphPosition.x - (previousOffsetX/2)
+      position.x - (previousOffsetX/2)
     ]
-  }, [types, graphPosition.x, rootMaxRadius, maxCount, rootsSpacing]);
+  }, [types, position.x, rootMaxRadius, maxCount, rootsSpacing]);
 
   const roots = useMemo(() => 
     typesWithRadius.map((type) => ({
       ...type,
       x: startingX + type.offsetX,
-      y: graphPosition.y
+      y: position.y
     }))
-  , [typesWithRadius, startingX, graphPosition.y]);
+  , [typesWithRadius, startingX, position.y]);
 
   return (
     <g name="roots">

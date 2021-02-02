@@ -43,7 +43,7 @@ export const Legend: React.FC<LegendProps> = ({
     spacing: legendOptions?.spacing || 15,
     fontSize: legendOptions?.fontSize || globalFontSize,
     fontColor: legendOptions?.fontColor || (luminosity === 'dark' ? '#e5e5e5' : '#333333'),
-    offFocusOpacity: legendOptions?.offFocuseOpacity || globalOffFocusOpacity || 1,
+    offFocusOpacity: legendOptions?.offFocuseOpacity ?? globalOffFocusOpacity ?? 0.5,
     indicatorRadius: legendOptions?.indicatorRadius || 5
   }), [legendOptions, globalFontSize, globalOffFocusOpacity, luminosity]);
   
@@ -72,7 +72,7 @@ export const Legend: React.FC<LegendProps> = ({
               {count + "  :  " + type}
             </text>
             <circle
-              cx={20 + 15 * index + 120}
+              cx={20 + spacingOffset + 120}
               cy={55}
               fill={color}
               r={indicatorRadius}

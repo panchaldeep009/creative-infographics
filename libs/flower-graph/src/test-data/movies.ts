@@ -1,6 +1,6 @@
 import data from './movies.json';
 
-type Movie = {
+export type Movie = {
   Title: string,
   Year: string,
   Rated: string,
