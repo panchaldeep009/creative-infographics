@@ -56,8 +56,8 @@ export const MoviesAndGenres: Story = () => {
         count: number('count', 6, { step: 1, range: true, max: 30 }, petalsOptionsGroupId),
         typeIndicatorRadius: number('typeIndicatorRadius', 3, { step: 1, range: true, max: 10, min: 1 }, petalsOptionsGroupId),
         radius: number('radius', undefined, { step: 1, min: 0, max: 300, range: true }, petalsOptionsGroupId),
-        radianOffset: number('radianOffset', undefined, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
-        rotation: number('rotate', undefined, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
+        radianOffset: number('radianOffset', 124, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
+        rotation: number('rotate', 245, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
       }}
     />
   </div>

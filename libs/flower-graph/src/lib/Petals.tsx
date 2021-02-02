@@ -65,31 +65,34 @@ export const Petals: React.FC<PetalsProps> = ({
 
   const dataChunksWithTypesPosition = useMemo(() =>
     dataChunksWithPosition
-      .map((chunk) => ({
-        ...chunk,
-        data: chunk.data.map((entry, entryIndex) => ({
-          ...entry,
-          types: entry.types.map((type, typeIndex) => {
-            const { x, y } = getSplitCirclePosition(
-              chunk.data.length,
-              entryIndex,
-              radius - (typeIndex * (typeIndicatorRadius * 2)),
-              rotation,
-              radianOffset
-            );
-            const typeCircleX = x + chunk.petalCircleX;
-            const typeCircleY = y + chunk.petalCircleY;
-            return {
-              ...type,
-              pos: {
-                x: typeCircleX,
-                y: typeCircleY
+      .map((chunk, chunkIndex) => {
+        const rotationOffset = (((360 - innerCircleRadianOffset) / count) * chunkIndex);
+          return {
+          ...chunk,
+          data: chunk.data.map((entry, entryIndex) => ({
+            ...entry,
+            types: entry.types.map((type, typeIndex) => {
+              const { x, y } = getSplitCirclePosition(
+                chunk.data.length,
+                entryIndex,
+                radius - (typeIndex * (typeIndicatorRadius * 2)),
+                rotation + rotationOffset,
+                radianOffset
+              );
+              const typeCircleX = x + chunk.petalCircleX;
+              const typeCircleY = y + chunk.petalCircleY;
+              return {
+                ...type,
+                pos: {
+                  x: typeCircleX,
+                  y: typeCircleY
+                }
               }
-            }
-          })
-        }))
-      }))
-  , [dataChunksWithPosition, radianOffset, radius, rotation, typeIndicatorRadius]);
+            })
+          }))
+        }
+      })
+  , [count, dataChunksWithPosition, innerCircleRadianOffset, radianOffset, radius, rotation, typeIndicatorRadius]);
 
   return (
     <g name="Petals">
