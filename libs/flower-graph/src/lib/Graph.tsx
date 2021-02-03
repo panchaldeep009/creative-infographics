@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import randomColors from 'randomcolor';
 import { CircleOptions, ColorOptions, Petal, Position, Root } from './types';
 import { Legend, LegendOptions } from './Legend';
@@ -19,6 +19,8 @@ export interface GraphProps<Data extends Record<string | number, unknown>> exten
   innerCircle?: Partial<CircleOptions>
   labelAccessor: ((data: Data) => string),
   typeAccessor: ((data: Data) => string[]),
+  onHoverLabel?: (label: string) => void,
+  onHoverTypes?: (types: string[]) => void,
 }
 
 type GraphComponent = <
@@ -42,11 +44,26 @@ export const Graph: GraphComponent = ({
   offFocuseOpacity = 0.4,
   graphRotation = 45,
   innerCircle,
+  onHoverTypes,
+  onHoverLabel
 }) => {
   const [hoveredlabel, setHoveredLabel] = useState<string>(undefined);
   const [hoveredTypes, setHoveredTypes] = useState<string[]>([]);
-  const [roots, updateRoots] = useState<Root[]>([])
-  const [petals, updatePetals] = useState<Petal[]>([])
+  const [roots, updateRoots] = useState<Root[]>([]);
+  const [petals, updatePetals] = useState<Petal[]>([]);
+
+  useEffect(() => {
+    if (onHoverTypes) {
+      onHoverTypes(hoveredTypes)
+    }
+  }, [onHoverTypes, hoveredTypes]);
+  
+  useEffect(() => {
+    if (onHoverLabel) {
+      onHoverLabel(hoveredlabel)
+    }
+  }, [onHoverLabel, hoveredlabel]);
+  
 
   const graphPosition = useMemo(() => ({
     x: graphPositionProp.x || width / 2,

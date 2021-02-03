@@ -204,7 +204,7 @@ export const Petals: React.FC<PetalsProps> = ({
                     transform={text.rotation}
                     fontSize={fontSize}
                   >
-                    {label}
+                    {label.length > 18 ? label.slice(0, 15) + '...' : label}
                   </text>
                   <line 
                     {...line}
