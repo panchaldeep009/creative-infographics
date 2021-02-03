@@ -13,3 +13,35 @@ export type CircleOptions = {
   radianOffset: number,
   rotation: number,
 }
+
+export type Root = {
+  x: number;
+  y: number;
+  radius: number;
+  offsetX: number;
+  type: string;
+  color: string;
+  count: number;
+};
+
+export type Petal = {
+  data: {
+    line: {
+      x1: number;
+      y1: number;
+      x2: number;
+      y2: number;
+    };
+    text: Position & {
+      rotation: string;
+    };
+    types: {
+      pos: Position;
+      type: string;
+      color: string;
+    }[];
+    label: string;
+  }[];
+  petalCircleX: number;
+  petalCircleY: number;
+};

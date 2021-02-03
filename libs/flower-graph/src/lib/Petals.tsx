@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { CircleOptions, Position } from './types';
+import React, { useEffect, useMemo } from 'react';
+import { CircleOptions, Petal, Position } from './types';
 import { chunkArray, getSplitCirclePosition } from './utilities';
 
 export interface PetalsOptions extends Partial<CircleOptions> {
@@ -20,6 +20,7 @@ export interface PetalsProps {
     }[]
   }[],
   position: Position;
+  updatePetals?: (petals: Petal[]) => void;
   fontSize?: number;
   innerCircle?: Partial<CircleOptions>;
   options?: PetalsOptions
@@ -27,10 +28,11 @@ export interface PetalsProps {
 
 export const Petals: React.FC<PetalsProps> = ({
   data,
-  innerCircle,
-  fontSize: globalFontSize,
+  options,
   position,
-  options
+  innerCircle,
+  updatePetals,
+  fontSize: globalFontSize,
 }) => {
   const {
     count,
@@ -157,12 +159,15 @@ export const Petals: React.FC<PetalsProps> = ({
         }
       })
   , [count, dataChunksWithTypesPosition, innerCircleRadianOffset, labelLineDistance, labelLineLength, radianOffset, radius, rotation]);
-
+  
+  useEffect(() => {
+    updatePetals(dataChunksWithLineAndTextPosition)
+  }, [updatePetals, dataChunksWithLineAndTextPosition]);
 
   return (
     <g name="Petals">
       {dataChunksWithLineAndTextPosition.map(
-        ({ data, petalCircleY, petalCircleX }, i) => (
+        ({ data }, i) => (
             <g key={`petal_${i}`}>
               {data.map(({ label, types, line, text }) => (
                 <g name={label} key={label}>

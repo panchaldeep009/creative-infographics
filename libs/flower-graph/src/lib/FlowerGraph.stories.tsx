@@ -22,7 +22,7 @@ export const MoviesAndGenres: Story = () => {
   return <div style={{ height: '100vh' }}>
     <Graph 
       data={data.filter(d => d.Genre?.length)}
-      labelAccessor={data => data.Title}
+      labelAccessor={data => data.Title.length > 18 ? data.Title.slice(0, 15) + '...' : data.Title}
       typeAccessor={data => data.Genre?.split(', ') || []} 
       fontSize={number('fontSize', 6, {}, graphPropsGroupId)}
       width={number('width', 600, {}, graphPropsGroupId)}
@@ -53,7 +53,7 @@ export const MoviesAndGenres: Story = () => {
         spacing: number('spacing', undefined, { step: -10, max: 20, range: true }, rootsOptionsGroupId),
       }}
       petalsOptions={{
-        count: number('count', 6, { step: 1, range: true, max: 30 }, petalsOptionsGroupId),
+        count: number('count', 5, { step: 1, range: true, max: 30 }, petalsOptionsGroupId),
         typeIndicatorRadius: number('typeIndicatorRadius', 3, { step: 1, range: true, max: 10, min: 1 }, petalsOptionsGroupId),
         radius: number('radius', undefined, { step: 1, min: 0, max: 300, range: true }, petalsOptionsGroupId),
         radianOffset: number('radianOffset', 124, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),

@@ -1,23 +1,24 @@
 import React, { useMemo, useState } from 'react';
 import randomColors from 'randomcolor';
-import { CircleOptions, ColorOptions, Position } from './types';
+import { CircleOptions, ColorOptions, Petal, Position, Root } from './types';
 import { Legend, LegendOptions } from './Legend';
 import { Roots, RootsOptions } from './Roots';
 import { Petals, PetalsOptions } from './Petals';
+import { Connections } from './Connections';
 export interface GraphProps<Data extends Record<string | number, unknown>> extends ColorOptions {
   data: Data[],
-  labelAccessor: ((data: Data) => string),
-  typeAccessor: ((data: Data) => string[]),
   width?: number,
   height?: number,
-  legendOptions?: LegendOptions,
-  rootsOptions?: RootsOptions,
-  petalsOptions?: PetalsOptions,
   fontSize?: number,
-  offFocuseOpacity?: number,
   graphRotation?: number,
+  offFocuseOpacity?: number,
+  rootsOptions?: RootsOptions,
+  legendOptions?: LegendOptions,
+  petalsOptions?: PetalsOptions,
   graphPosition?: Partial<Position>,
   innerCircle?: Partial<CircleOptions>
+  labelAccessor: ((data: Data) => string),
+  typeAccessor: ((data: Data) => string[]),
 }
 
 type GraphComponent = <
@@ -43,6 +44,9 @@ export const Graph: GraphComponent = ({
   innerCircle,
 }) => {
   const [hoveredType, setHoveredType] = useState<string>(undefined);
+  const [roots, updateRoots] = useState<Root[]>([])
+  const [petals, updatePetals] = useState<Petal[]>([])
+
   const graphPosition = useMemo(() => ({
     x: graphPositionProp.x || width / 2,
     y: graphPositionProp.y || ((height - 100) / 2) + 100
@@ -103,12 +107,17 @@ export const Graph: GraphComponent = ({
           )
         `}
       >
+        <Connections
+          roots={roots}
+          petals={petals}
+        />
         <Petals
           data={mappedData}
           innerCircle={innerCircle}
           position={graphPosition}
           options={petalsOptions}
           fontSize={fontSize}
+          updatePetals={updatePetals}
         />
         <Roots 
           types={legendData}
@@ -118,6 +127,7 @@ export const Graph: GraphComponent = ({
           hoveredRoot={hoveredType}
           onRootHover={setHoveredType}
           onRootBlur={() => setHoveredType(undefined)}
+          updateRoots={updateRoots}
         />
       </g>
     </svg>

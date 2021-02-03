@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
-import { Position } from './types';
+import React, { useEffect, useMemo } from 'react';
+import { Position, Root } from './types';
 
 export interface RootsOptions {
   spacing?: number;
+  rootMaxRadius?: number;
   offFocuseOpacity?: number;
-  rootMaxRadius?: number
 } 
 
 export interface RootsProps {
@@ -14,21 +14,23 @@ export interface RootsProps {
     count: number,
   }[];
   position: Position;
-  offFocuseOpacity?: number;
   hoveredRoot?: string;
   options?: RootsOptions;
-  onRootHover?: (type?: string) => void;
   onRootBlur?: () => void;
+  offFocuseOpacity?: number;
+  onRootHover?: (type?: string) => void;
+  updateRoots?: (petals: Root[]) => void;
 }
 
 export const Roots: React.FC<RootsProps> = ({
   types,
   options,
-  offFocuseOpacity: globalOffFocusOpacity,
-  hoveredRoot,
   position,
+  onRootBlur,
   onRootHover,
-  onRootBlur
+  updateRoots,
+  hoveredRoot,
+  offFocuseOpacity: globalOffFocusOpacity,
 }) => {
   const {
     offFocusOpacity,
@@ -69,6 +71,10 @@ export const Roots: React.FC<RootsProps> = ({
       y: position.y
     }))
   , [typesWithRadius, startingX, position.y]);
+
+  useEffect(() => {
+    updateRoots(roots);
+  }, [updateRoots, roots])
 
   return (
     <g name="roots">
