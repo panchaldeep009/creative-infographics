@@ -43,7 +43,8 @@ export const Graph: GraphComponent = ({
   graphRotation = 45,
   innerCircle,
 }) => {
-  const [hoveredType, setHoveredType] = useState<string>(undefined);
+  const [hoveredlabel, setHoveredLabel] = useState<string>(undefined);
+  const [hoveredTypes, setHoveredTypes] = useState<string[]>([]);
   const [roots, updateRoots] = useState<Root[]>([])
   const [petals, updatePetals] = useState<Petal[]>([])
 
@@ -92,10 +93,10 @@ export const Graph: GraphComponent = ({
         fontSize={fontSize}
         luminosity={luminosity}
         legendOptions={legendOptions}
-        hoveredLegend={hoveredType}
+        hoveredLegends={hoveredTypes}
         offFocuseOpacity={offFocuseOpacity}
-        onLegendHover={setHoveredType}
-        onLegendBlur={() => setHoveredType(undefined)}
+        onLegendHover={setHoveredTypes}
+        onLegendBlur={() => setHoveredTypes([])}
       />
       <g
         name="Graph"
@@ -110,6 +111,8 @@ export const Graph: GraphComponent = ({
         <Connections
           roots={roots}
           petals={petals}
+          hoveredConnections={hoveredTypes}
+          hoveredLabel={hoveredlabel}
         />
         <Petals
           data={mappedData}
@@ -118,15 +121,22 @@ export const Graph: GraphComponent = ({
           options={petalsOptions}
           fontSize={fontSize}
           updatePetals={updatePetals}
+          hoveredLabel={hoveredlabel}
+          hoveredTypes={hoveredTypes}
+          onLabelHover={setHoveredLabel}
+          onTypeHover={setHoveredTypes}
+          onLabelBlur={() => setHoveredLabel(undefined)}
+          onTypeBlur={() => setHoveredTypes([])}
+          offFocuseOpacity={offFocuseOpacity}
         />
         <Roots 
           types={legendData}
           offFocuseOpacity={offFocuseOpacity}
           options={rootsOptions}
           position={graphPosition}
-          hoveredRoot={hoveredType}
-          onRootHover={setHoveredType}
-          onRootBlur={() => setHoveredType(undefined)}
+          hoveredRoots={hoveredTypes}
+          onRootHover={setHoveredTypes}
+          onRootBlur={() => setHoveredTypes([])}
           updateRoots={updateRoots}
         />
       </g>

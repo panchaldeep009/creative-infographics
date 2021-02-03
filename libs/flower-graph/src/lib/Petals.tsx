@@ -23,7 +23,14 @@ export interface PetalsProps {
   updatePetals?: (petals: Petal[]) => void;
   fontSize?: number;
   innerCircle?: Partial<CircleOptions>;
-  options?: PetalsOptions
+  options?: PetalsOptions;
+  hoveredLabel?: string;
+  hoveredTypes?: string[];
+  onTypeBlur?: () => void;
+  onLabelBlur?: () => void;
+  onTypeHover?: (types: string[]) => void;
+  onLabelHover?: (label: string) => void;
+  offFocuseOpacity?: number;
 }
 
 export const Petals: React.FC<PetalsProps> = ({
@@ -33,6 +40,13 @@ export const Petals: React.FC<PetalsProps> = ({
   innerCircle,
   updatePetals,
   fontSize: globalFontSize,
+  onTypeBlur,
+  onLabelBlur,
+  hoveredLabel,
+  hoveredTypes,
+  onLabelHover,
+  onTypeHover,
+  offFocuseOpacity
 }) => {
   const {
     count,
@@ -170,7 +184,19 @@ export const Petals: React.FC<PetalsProps> = ({
         ({ data }, i) => (
             <g key={`petal_${i}`}>
               {data.map(({ label, types, line, text }) => (
-                <g name={label} key={label}>
+                <g
+                  opacity={hoveredLabel && hoveredLabel !== label ? offFocuseOpacity : 1}
+                  name={label}
+                  key={label} 
+                  onMouseMove={() => {
+                    onLabelHover(label);
+                    onTypeHover(types.map(({ type }) => type));
+                  }}
+                  onMouseLeave={() => {
+                    onLabelBlur();
+                    onTypeBlur();
+                  }} 
+                >
                   <text
                     x={text.x}
                     y={text.y}
@@ -187,11 +213,14 @@ export const Petals: React.FC<PetalsProps> = ({
                   <g name={`${label}_types`} key={`${label}_types`}>
                     {types.map(({type, color, pos}) => (
                       <circle
+                        opacity={hoveredTypes.length && !hoveredTypes.includes(type) ? offFocuseOpacity : 1}
                         key={`${label}_${type}`}
                         fill={color}
                         r={typeIndicatorRadius}
                         cx={pos.x}
                         cy={pos.y}
+                        onMouseMove={() => onTypeHover([type])}
+                        onMouseLeave={onTypeBlur}
                       />
                     ))}
                   </g>

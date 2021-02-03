@@ -14,11 +14,11 @@ export interface RootsProps {
     count: number,
   }[];
   position: Position;
-  hoveredRoot?: string;
+  hoveredRoots?: string[];
   options?: RootsOptions;
   onRootBlur?: () => void;
   offFocuseOpacity?: number;
-  onRootHover?: (type?: string) => void;
+  onRootHover?: (type?: string[]) => void;
   updateRoots?: (petals: Root[]) => void;
 }
 
@@ -29,7 +29,7 @@ export const Roots: React.FC<RootsProps> = ({
   onRootBlur,
   onRootHover,
   updateRoots,
-  hoveredRoot,
+  hoveredRoots,
   offFocuseOpacity: globalOffFocusOpacity,
 }) => {
   const {
@@ -86,8 +86,8 @@ export const Roots: React.FC<RootsProps> = ({
             cy={y}
             fill={color}
             r={radius}
-            opacity={(hoveredRoot && hoveredRoot !== type) ? offFocusOpacity : 1}
-            onMouseMove={() => onRootHover(type)}
+            opacity={(hoveredRoots.length && !hoveredRoots.includes(type)) ? offFocusOpacity : 1}
+            onMouseMove={() => onRootHover([type])}
             onMouseLeave={onRootBlur}
           />
         )

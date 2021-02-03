@@ -17,9 +17,9 @@ export interface LegendProps extends Pick<ColorOptions, 'luminosity'>{
   }[];
   fontSize: number;
   offFocuseOpacity?: number;
-  hoveredLegend?: string;
+  hoveredLegends?: string[];
   legendOptions?: LegendOptions;
-  onLegendHover?: (type?: string) => void;
+  onLegendHover?: (type?: string[]) => void;
   onLegendBlur?: () => void;
 }
 
@@ -29,7 +29,7 @@ export const Legend: React.FC<LegendProps> = ({
   fontSize: globalFontSize,
   offFocuseOpacity: globalOffFocusOpacity,
   luminosity,
-  hoveredLegend,
+  hoveredLegends,
   onLegendHover,
   onLegendBlur
 }) => {
@@ -54,7 +54,7 @@ export const Legend: React.FC<LegendProps> = ({
         return (
           <g 
             opacity={
-              (hoveredLegend && hoveredLegend !== type) ? offFocusOpacity : 1
+              (hoveredLegends.length && !hoveredLegends.includes(type)) ? offFocusOpacity : 1
             } 
             key={type} 
             name={type}
@@ -66,7 +66,7 @@ export const Legend: React.FC<LegendProps> = ({
               transform={`rotate(-45 ${spacingOffset} 45)`}
               fill={fontColor}
               fontSize={fontSize}
-              onMouseMove={() => onLegendHover(type)}
+              onMouseMove={() => onLegendHover([type])}
               onMouseLeave={onLegendBlur}
             >
               {count + "  :  " + type}
@@ -76,7 +76,7 @@ export const Legend: React.FC<LegendProps> = ({
               cy={55}
               fill={color}
               r={indicatorRadius}
-              onMouseMove={() => onLegendHover(type)}
+              onMouseMove={() => onLegendHover([type])}
               onMouseLeave={onLegendBlur}
             />
           </g>

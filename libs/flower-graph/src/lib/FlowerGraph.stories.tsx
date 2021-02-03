@@ -37,7 +37,7 @@ export const MoviesAndGenres: Story = () => {
         rotation: number('rotate', undefined, { step: 1, min: -360, max: 360, range: true }, innerCircleGroupId),
       }}
       graphRotation={number('graphRotation', 45, { step: 1, min: -360, max: 360, range: true }, graphPropsGroupId)}
-      offFocuseOpacity={number('offFocuseOpacity', 0.4, { step: 0.1, min: 0, max: 1, range: true }, graphPropsGroupId)}
+      offFocuseOpacity={number('offFocuseOpacity', 0.2, { step: 0.1, min: 0, max: 1, range: true }, graphPropsGroupId)}
       luminosity={radios('luminosity', { Bright: 'bright', Dark: 'dark' }, 'bright', graphPropsGroupId)}
       hue={select('hue', hues, undefined, graphPropsGroupId) as Hue}
       legendOptions={{
@@ -54,7 +54,7 @@ export const MoviesAndGenres: Story = () => {
       }}
       petalsOptions={{
         count: number('count', 5, { step: 1, range: true, max: 30 }, petalsOptionsGroupId),
-        typeIndicatorRadius: number('typeIndicatorRadius', 3, { step: 1, range: true, max: 10, min: 1 }, petalsOptionsGroupId),
+        typeIndicatorRadius: number('typeIndicatorRadius', 2, { step: 1, range: true, max: 10, min: 1 }, petalsOptionsGroupId),
         radius: number('radius', undefined, { step: 1, min: 0, max: 300, range: true }, petalsOptionsGroupId),
         radianOffset: number('radianOffset', 124, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
         rotation: number('rotate', 245, { step: 1, min: -360, max: 360, range: true }, petalsOptionsGroupId),
