@@ -28,25 +28,24 @@ type GraphComponent = <
 >(props: GraphProps<D>) => ReturnType<React.FC>;
 
 
-export const Graph: GraphComponent = ({
-  data,
-  typeAccessor,
-  labelAccessor,
-  hue,
-  legendOptions,
-  petalsOptions,
-  rootsOptions,
-  graphPosition: graphPositionProp,
-  width = 600,
-  height = 700,
-  luminosity = 'bright',
-  fontSize = 6,
-  offFocuseOpacity = 0.4,
-  graphRotation = 45,
-  innerCircle,
-  onHoverTypes,
-  onHoverLabel
-}) => {
+export const Graph: GraphComponent = ({ data, typeAccessor, labelAccessor, ...props}) => {
+  const {
+    hue,
+    legendOptions,
+    petalsOptions,
+    rootsOptions,
+    graphPosition: graphPositionProp,
+    width = 600,
+    height = 700,
+    luminosity = 'bright',
+    fontSize = 6,
+    offFocuseOpacity = 0.4,
+    graphRotation = 45,
+    innerCircle,
+    onHoverTypes,
+    onHoverLabel
+  } = props;
+  console.log(JSON.stringify(props));
   const [hoveredlabel, setHoveredLabel] = useState<string>(undefined);
   const [hoveredTypes, setHoveredTypes] = useState<string[]>([]);
   const [roots, updateRoots] = useState<Root[]>([]);
@@ -66,8 +65,8 @@ export const Graph: GraphComponent = ({
   
 
   const graphPosition = useMemo(() => ({
-    x: graphPositionProp.x || width / 2,
-    y: graphPositionProp.y || ((height - 100) / 2) + 100
+    x: graphPositionProp?.x || width / 2,
+    y: graphPositionProp?.y || ((height - 100) / 2) + 100
   }), [graphPositionProp, height, width])
 
   const types = useMemo(() => 
