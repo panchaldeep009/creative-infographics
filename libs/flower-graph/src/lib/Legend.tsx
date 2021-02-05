@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { ColorOptions } from './types';
+import { ColorOptions, HoverEvent } from './types';
 
 export interface LegendOptions {
   fontColor?: string;
@@ -19,8 +19,8 @@ export interface LegendProps extends Pick<ColorOptions, 'luminosity'>{
   offFocuseOpacity?: number;
   hoveredLegends?: string[];
   legendOptions?: LegendOptions;
-  onLegendHover?: (type?: string[]) => void;
-  onLegendBlur?: () => void;
+  onLegendHover?: HoverEvent;
+  onLegendBlur?: HoverEvent;
 }
 
 export const Legend: React.FC<LegendProps> = ({
@@ -66,7 +66,8 @@ export const Legend: React.FC<LegendProps> = ({
               transform={`rotate(-45 ${spacingOffset} 45)`}
               fill={fontColor}
               fontSize={fontSize}
-              onMouseMove={() => onLegendHover([type])}
+              data-types={type}
+              onMouseMove={onLegendHover}
               onMouseLeave={onLegendBlur}
             >
               {count + "  :  " + type}
@@ -76,7 +77,8 @@ export const Legend: React.FC<LegendProps> = ({
               cy={55}
               fill={color}
               r={indicatorRadius}
-              onMouseMove={() => onLegendHover([type])}
+              data-types={type}
+              onMouseMove={onLegendHover}
               onMouseLeave={onLegendBlur}
             />
           </g>

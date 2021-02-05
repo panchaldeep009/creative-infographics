@@ -79,3 +79,5 @@ export type ComponentsAddtionalProps = Partial<{
     path: AdditionalPropsType<'path'>;
   }>
 }>
+
+export type HoverEvent = React.MouseEventHandler<SVGGElement>;

@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import randomColors from 'randomcolor';
-import { CircleOptions, ColorOptions, Petal, Position, Root } from './types';
+import { CircleOptions, ColorOptions, HoverEvent, Petal, Position, Root } from './types';
 import { Legend, LegendOptions } from './Legend';
 import { Roots, RootsOptions } from './Roots';
 import { Petals, PetalsOptions } from './Petals';
@@ -28,41 +28,55 @@ type GraphComponent = <
 >(props: GraphProps<D>) => ReturnType<React.FC>;
 
 
-export const Graph: GraphComponent = ({ data, typeAccessor, labelAccessor, ...props}) => {
-  const {
-    hue,
-    legendOptions,
-    petalsOptions,
-    rootsOptions,
-    graphPosition: graphPositionProp,
-    width = 600,
-    height = 700,
-    luminosity = 'bright',
-    fontSize = 6,
-    offFocuseOpacity = 0.4,
-    graphRotation = 45,
-    innerCircle,
-    onHoverTypes,
-    onHoverLabel
-  } = props;
-  console.log(JSON.stringify(props));
+export const Graph: GraphComponent = ({ 
+  data,
+  typeAccessor,
+  labelAccessor,
+  hue,
+  legendOptions,
+  petalsOptions,
+  rootsOptions,
+  graphPosition: graphPositionProp,
+  width = 600,
+  height = 700,
+  luminosity = 'bright',
+  fontSize = 6,
+  offFocuseOpacity = 0.4,
+  graphRotation = 45,
+  innerCircle,
+  onHoverTypes,
+  onHoverLabel
+}) => {
   const [hoveredlabel, setHoveredLabel] = useState<string>(undefined);
   const [hoveredTypes, setHoveredTypes] = useState<string[]>([]);
   const [roots, updateRoots] = useState<Root[]>([]);
   const [petals, updatePetals] = useState<Petal[]>([]);
-
-  useEffect(() => {
-    if (onHoverTypes) {
-      onHoverTypes(hoveredTypes)
-    }
-  }, [onHoverTypes, hoveredTypes]);
   
-  useEffect(() => {
-    if (onHoverLabel) {
-      onHoverLabel(hoveredlabel)
-    }
-  }, [onHoverLabel, hoveredlabel]);
+  const handleMouseMove: HoverEvent =
+    useCallback((e) => {
+      const label = e.currentTarget.getAttribute('data-label');
+      const types = e.currentTarget.getAttribute('data-types').split(',');
+      setHoveredLabel(label);
+      setHoveredTypes(types);
+      if (onHoverTypes) {
+        onHoverTypes(types);
+      }
+      if (onHoverLabel) {
+        onHoverLabel(label);
+      }
+    }, [onHoverLabel, onHoverTypes]);
   
+  const handleMouseLeave: HoverEvent =
+    useCallback(() => {
+      setHoveredLabel(undefined);
+      setHoveredTypes([]);
+      if (onHoverTypes) {
+        onHoverTypes([]);
+      }
+      if (onHoverLabel) {
+        onHoverLabel(undefined);
+      }
+    }, [onHoverLabel, onHoverTypes]);
 
   const graphPosition = useMemo(() => ({
     x: graphPositionProp?.x || width / 2,
@@ -111,8 +125,8 @@ export const Graph: GraphComponent = ({ data, typeAccessor, labelAccessor, ...pr
         legendOptions={legendOptions}
         hoveredLegends={hoveredTypes}
         offFocuseOpacity={offFocuseOpacity}
-        onLegendHover={setHoveredTypes}
-        onLegendBlur={() => setHoveredTypes([])}
+        onLegendHover={handleMouseMove}
+        onLegendBlur={handleMouseLeave}
       />
       <g
         name="Graph"
@@ -139,10 +153,8 @@ export const Graph: GraphComponent = ({ data, typeAccessor, labelAccessor, ...pr
           updatePetals={updatePetals}
           hoveredLabel={hoveredlabel}
           hoveredTypes={hoveredTypes}
-          onLabelHover={setHoveredLabel}
-          onTypeHover={setHoveredTypes}
-          onLabelBlur={() => setHoveredLabel(undefined)}
-          onTypeBlur={() => setHoveredTypes([])}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
           offFocuseOpacity={offFocuseOpacity}
         />
         <Roots 
@@ -151,8 +163,8 @@ export const Graph: GraphComponent = ({ data, typeAccessor, labelAccessor, ...pr
           options={rootsOptions}
           position={graphPosition}
           hoveredRoots={hoveredTypes}
-          onRootHover={setHoveredTypes}
-          onRootBlur={() => setHoveredTypes([])}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
           updateRoots={updateRoots}
         />
       </g>

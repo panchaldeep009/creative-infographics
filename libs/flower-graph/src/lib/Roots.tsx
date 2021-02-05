@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Position, Root } from './types';
+import { HoverEvent, Position, Root } from './types';
 
 export interface RootsOptions {
   spacing?: number;
@@ -16,18 +16,18 @@ export interface RootsProps {
   position: Position;
   hoveredRoots?: string[];
   options?: RootsOptions;
-  onRootBlur?: () => void;
   offFocuseOpacity?: number;
-  onRootHover?: (type?: string[]) => void;
   updateRoots?: (petals: Root[]) => void;
+  onMouseMove?: HoverEvent;
+  onMouseLeave?: HoverEvent;
 }
 
 export const Roots: React.FC<RootsProps> = ({
   types,
   options,
   position,
-  onRootBlur,
-  onRootHover,
+  onMouseMove,
+  onMouseLeave,
   updateRoots,
   hoveredRoots,
   offFocuseOpacity: globalOffFocusOpacity,
@@ -87,8 +87,9 @@ export const Roots: React.FC<RootsProps> = ({
             fill={color}
             r={radius}
             opacity={(hoveredRoots.length && !hoveredRoots.includes(type)) ? offFocusOpacity : 1}
-            onMouseMove={() => onRootHover([type])}
-            onMouseLeave={onRootBlur}
+            data-types={type}
+            onMouseMove={onMouseMove}
+            onMouseLeave={onMouseLeave}
           />
         )
       })}
