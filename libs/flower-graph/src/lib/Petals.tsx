@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { CircleOptions, HoverEvent, Petal, Position } from './types';
 import { chunkArray, getSplitCirclePosition } from './utilities';
 
@@ -81,9 +81,9 @@ export const Petals: React.FC<PetalsProps> = ({
   const dataChunksWithPosition = useMemo(() =>
     dataChunks
       .map((data, index) => {
-        const { x, y } = getSplitCirclePosition(count, index, innerCircleRadius, innerCircleRotation, innerCircleRadianOffset);
-        const petalCircleX = x + position.x;
-        const petalCircleY = y + position.y;
+        const { x, y } = getSplitCirclePosition(count, index, innerCircleRotation, innerCircleRadianOffset);
+        const petalCircleX = (x * innerCircleRadius) + position.x;
+        const petalCircleY = (y * innerCircleRadius) + position.y;
         return {
           data,
           petalCircleX,
@@ -93,99 +93,73 @@ export const Petals: React.FC<PetalsProps> = ({
   , [count, dataChunks, innerCircleRadianOffset, innerCircleRadius, position.x, position.y, innerCircleRotation]);
 
   const dataChunksWithTypesPosition = useMemo(() =>
-    dataChunksWithPosition
+    {
+      const computedData = dataChunksWithPosition
       .map((chunk, chunkIndex) => {
         const rotationOffset = (((360 - innerCircleRadianOffset) / count) * chunkIndex);
+        const textRotation =  (-(radianOffset - 360) / chunk.data.length);
           return {
           ...chunk,
-          data: chunk.data.map((entry, entryIndex) => ({
+          data: chunk.data.map((entry, entryIndex) => {
+            const { x, y } = getSplitCirclePosition(
+              chunk.data.length,
+              entryIndex,
+              rotation + rotationOffset,
+              radianOffset
+            );
+            return ({
             ...entry,
+            labelTrimed: entry.label.length > 18 ? entry.label.slice(0, 15) + '...' : entry.label,
+            typesString: entry.types.map(({ type }) => type).join(','),
             types: entry.types.map((type, typeIndex) => {
-              const { x, y } = getSplitCirclePosition(
-                chunk.data.length,
-                entryIndex,
-                radius - (typeIndex * (typeIndicatorRadius * 2)),
-                rotation + rotationOffset,
-                radianOffset
-              );
-              const typeCircleX = x + chunk.petalCircleX;
-              const typeCircleY = y + chunk.petalCircleY;
+              const r = radius - (typeIndex * (typeIndicatorRadius * 2))
+              const typeCircleX = (x * r) + chunk.petalCircleX;
+              const typeCircleY = (y * r) + chunk.petalCircleY;
               return {
                 ...type,
                 pos: {
                   x: typeCircleX,
                   y: typeCircleY
-                }
+                },
               }
-            })
-          }))
+            }),
+            line: {
+              x1: (x * (radius + labelLineDistance)) + chunk.petalCircleX,
+              y1: (y * (radius + labelLineDistance)) + chunk.petalCircleY,
+              x2: (x * (radius + labelLineDistance + labelLineLength)) + chunk.petalCircleX,
+              y2: (y * (radius + labelLineDistance + labelLineLength)) + chunk.petalCircleY,
+            },
+            text: {
+              x: chunk.petalCircleX + radius + labelLineLength + labelLineDistance + 2,
+              y: chunk.petalCircleY,
+              rotation: `
+                rotate(
+                  ${((textRotation) * entryIndex) + rotationOffset + rotation},
+                  ${chunk.petalCircleX},
+                  ${chunk.petalCircleY}
+                )
+              `
+            }
+          })})
         }
-      })
-  , [count, dataChunksWithPosition, innerCircleRadianOffset, radianOffset, radius, rotation, typeIndicatorRadius]);
-
-  const dataChunksWithLineAndTextPosition = useMemo(() =>
-    dataChunksWithTypesPosition
-      .map((chunk, chunkIndex) => {
-        const rotationOffset = (((360 - innerCircleRadianOffset) / count) * chunkIndex);
-        const textRotation =  (-(radianOffset - 360) / chunk.data.length);
-        return {
-          ...chunk,
-          data: chunk.data.map((entry, entryIndex) => {
-            const startPos = getSplitCirclePosition(
-              chunk.data.length,
-              entryIndex,
-              radius + labelLineDistance,
-              rotation + rotationOffset,
-              radianOffset
-            );
-            const endPos = getSplitCirclePosition(
-              chunk.data.length,
-              entryIndex,
-              radius + labelLineDistance + labelLineLength,
-              rotation + rotationOffset,
-              radianOffset
-            );
-            return ({
-              ...entry,
-              line: {
-                x1: startPos.x + chunk.petalCircleX,
-                y1: startPos.y + chunk.petalCircleY,
-                x2: endPos.x + chunk.petalCircleX,
-                y2: endPos.y + chunk.petalCircleY,
-              },
-              text: {
-                x: chunk.petalCircleX + radius + labelLineLength + labelLineDistance + 2,
-                y: chunk.petalCircleY,
-                rotation: `
-                  rotate(
-                    ${((textRotation) * entryIndex) + rotationOffset + rotation},
-                    ${chunk.petalCircleX},
-                    ${chunk.petalCircleY}
-                  )
-                `
-              }
-            })
-          })
-        }
-      })
-  , [count, dataChunksWithTypesPosition, innerCircleRadianOffset, labelLineDistance, labelLineLength, radianOffset, radius, rotation]);
-  
-  useEffect(() => {
-    updatePetals(dataChunksWithLineAndTextPosition)
-  }, [updatePetals, dataChunksWithLineAndTextPosition]);
+      });
+      updatePetals(computedData);
+      return computedData;
+    }
+  , [updatePetals, count, dataChunksWithPosition, innerCircleRadianOffset, radianOffset, radius, rotation, typeIndicatorRadius, labelLineDistance, labelLineLength]);
 
   return (
     <g name="Petals">
-      {dataChunksWithLineAndTextPosition.map(
+      {dataChunksWithTypesPosition.map(
         ({ data }, i) => (
             <g key={`petal_${i}`}>
-              {data.map(({ label, types, line, text }) => (
+              {data.map(({ label, types, line, text, typesString, labelTrimed }) => (
                 <g
                   opacity={hoveredLabel && hoveredLabel !== label ? offFocuseOpacity : 1}
                   name={label}
                   key={label}
                   data-label={label}
-                  data-types={types.map(({ type }) => type).join(',')}
+                  data-types={typesString}
                   onMouseMove={onMouseMove}
                   onMouseLeave={onMouseLeave} 
                 >
@@ -196,7 +170,7 @@ export const Petals: React.FC<PetalsProps> = ({
                     transform={text.rotation}
                     fontSize={fontSize}
                   >
-                    {label.length > 18 ? label.slice(0, 15) + '...' : label}
+                    {labelTrimed}
                   </text>
                   <line 
                     {...line}
