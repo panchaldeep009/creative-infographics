@@ -1,11 +1,6 @@
-import React, { useEffect, useMemo } from 'react';
-import { HoverEvent, Position, Root } from './types';
-
-export interface RootsOptions {
-  spacing?: number;
-  rootMaxRadius?: number;
-  offFocuseOpacity?: number;
-} 
+import React, { useMemo } from 'react';
+import { ConnectionsRef } from './Connections';
+import { HoverEvent, Position, Root, RootsOptions } from './types';
 
 export interface RootsProps {
   types: {
@@ -65,7 +60,7 @@ export const Roots: React.FC<RootsProps> = ({
   }, [types, position.x, rootMaxRadius, maxCount, rootsSpacing]);
 
   const roots = useMemo(() => {
-    const calculatedRoots = typesWithRadius.map((type) => ({
+    const calculatedRoots = typesWithRadius.map((type, index) => ({
       ...type,
       x: startingX + type.offsetX,
       y: position.y

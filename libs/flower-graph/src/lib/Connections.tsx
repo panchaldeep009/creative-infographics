@@ -1,25 +1,26 @@
-import React from 'react';
-import { Petal, Root } from './types';
+import React, { MutableRefObject } from 'react';
+import { Data } from './types';
+
+export type ConnectionsRef = MutableRefObject<Record<string,SVGPathElement>>;
 
 interface ConnectionsProps {
-  roots: Root[];
-  petals: Petal[];
+  dataChunks: Data[][];
   hoveredConnections?: string[];
   hoveredLabel?: string;
+  connectionsRef: ConnectionsRef;
 }
 
-export const Connections: React.FC<ConnectionsProps> = ({ petals, roots, hoveredConnections, hoveredLabel }) => {
+export const Connections: React.FC<ConnectionsProps> = React.memo(({ dataChunks, hoveredConnections, hoveredLabel, connectionsRef }) => {
   return <g name="connections">
-    {petals.map(({ data, petalCircleX: petalX, petalCircleY: petalY }, index) => (
+    {dataChunks.map((data, index) => (
       <g key={`connections_petal_${index}`} name={`connections_petal_${index}`}>
-        {data.map(({ types, label }) => (
+        {data.map(({ types, label }, dataIndex) => (
         <g 
           key={label}
           opacity={hoveredLabel && hoveredLabel !== label ? 0 : 1}
           name={`connections_${label}`}
         >
-          {types.map(({ type, color, pos }) => {
-            const typeRoot = roots.find(r => r.type === type);
+          {types.map(({ type, color }, typeIndex) => {
             return (
               <path
                 opacity={hoveredConnections.length && !hoveredConnections.includes(type) ? 0 : 1}
@@ -27,7 +28,8 @@ export const Connections: React.FC<ConnectionsProps> = ({ petals, roots, hovered
                 stroke={color}
                 fill="transparent"
                 strokeWidth={0.5}
-                d={`M ${pos.x} ${pos.y} C ${petalX} ${petalY}, ${typeRoot.x} ${typeRoot.y}, ${typeRoot.x} ${typeRoot.y}`}
+                ref={p => connectionsRef.current[`${typeIndex}_${index}_${dataIndex}`] = p}
+                d="M 0 0, 0 0"
               />
             )
           })}
@@ -36,4 +38,4 @@ export const Connections: React.FC<ConnectionsProps> = ({ petals, roots, hovered
       </g>
     ))}
   </g>
-}
+});

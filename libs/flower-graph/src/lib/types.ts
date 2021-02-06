@@ -47,6 +47,60 @@ export type Petal = {
   petalCircleY: number;
 };
 
+export type Data = {
+  label: string,
+  types: {
+    type: string,
+    color: string
+  }[]
+};
+
+export interface RootsOptions {
+  spacing?: number;
+  rootMaxRadius?: number;
+  offFocuseOpacity?: number;
+} 
+
+export interface LegendOptions {
+  fontColor?: string;
+  fontSize?: number;
+  spacing?: number;
+  offFocuseOpacity?: number;
+  indicatorRadius?: number
+} 
+
+export interface LegendOptions {
+  fontColor?: string;
+  fontSize?: number;
+  spacing?: number;
+  offFocuseOpacity?: number;
+  indicatorRadius?: number
+} 
+
+export interface PetalsOptions extends Partial<CircleOptions> {
+  count?: number;
+  labelColor?: string;
+  labelFontSize?: number,
+  labelLineColor?: string;
+  labelLineLength?: number;
+  labelLineDistance?: number;
+  typeIndicatorRadius?: number;
+}
+
+export type GraphBasicProps = ColorOptions & {
+  width?: number,
+  height?: number,
+  fontSize?: number,
+  graphRotation?: number,
+  offFocuseOpacity?: number,
+  rootsOptions?: RootsOptions,
+  legendOptions?: LegendOptions,
+  petalsOptions?: PetalsOptions,
+  graphPosition?: Partial<Position>,
+  innerCircle?: Partial<CircleOptions>
+  onHoverLabel?: (label: string) => void,
+  onHoverTypes?: (types: string[]) => void,
+}
 
 export type AdditionalPropsType<E extends ElementType, P = Partial<React.ComponentProps<E>>> = P | ((currentProps: P) => P);
 

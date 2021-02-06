@@ -1,13 +1,5 @@
 import React, { useMemo } from 'react';
-import { ColorOptions, HoverEvent } from './types';
-
-export interface LegendOptions {
-  fontColor?: string;
-  fontSize?: number;
-  spacing?: number;
-  offFocuseOpacity?: number;
-  indicatorRadius?: number
-} 
+import { ColorOptions, HoverEvent, LegendOptions } from './types';
 
 export interface LegendProps extends Pick<ColorOptions, 'luminosity'>{
   types: {

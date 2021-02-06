@@ -1,26 +1,16 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import randomColors from 'randomcolor';
-import { CircleOptions, ColorOptions, HoverEvent, Petal, Position, Root } from './types';
-import { Legend, LegendOptions } from './Legend';
-import { Roots, RootsOptions } from './Roots';
-import { Petals, PetalsOptions } from './Petals';
+import { GraphBasicProps, HoverEvent, Petal, Root } from './types';
+import { Legend } from './Legend';
+import { Roots } from './Roots';
 import { Connections } from './Connections';
-export interface GraphProps<Data extends Record<string | number, unknown>> extends ColorOptions {
-  data: Data[],
-  width?: number,
-  height?: number,
-  fontSize?: number,
-  graphRotation?: number,
-  offFocuseOpacity?: number,
-  rootsOptions?: RootsOptions,
-  legendOptions?: LegendOptions,
-  petalsOptions?: PetalsOptions,
-  graphPosition?: Partial<Position>,
-  innerCircle?: Partial<CircleOptions>
-  labelAccessor: ((data: Data) => string),
-  typeAccessor: ((data: Data) => string[]),
-  onHoverLabel?: (label: string) => void,
-  onHoverTypes?: (types: string[]) => void,
+import { CirclesRef, LinesRef, Petals, TextsRef } from './Petals';
+import { chunkArray } from './utilities';
+import { usePetalsPositions } from './usePetalsPositions';
+export interface GraphProps<D extends Record<string | number, unknown>> extends GraphBasicProps {
+  data: D[],
+  labelAccessor: ((data: D) => string),
+  typeAccessor: ((data: D) => string[]),
 }
 
 type GraphComponent = <
@@ -37,20 +27,24 @@ export const Graph: GraphComponent = ({
   petalsOptions,
   rootsOptions,
   graphPosition: graphPositionProp,
+  innerCircle,
   width = 600,
   height = 700,
   luminosity = 'bright',
   fontSize = 6,
   offFocuseOpacity = 0.4,
   graphRotation = 45,
-  innerCircle,
   onHoverTypes,
   onHoverLabel
 }) => {
   const [hoveredlabel, setHoveredLabel] = useState<string>(undefined);
   const [hoveredTypes, setHoveredTypes] = useState<string[]>([]);
+  const connectionsRef = useRef<Record<string,SVGPathElement>>({});
+  const textsRef: TextsRef = useRef({})
+  const linesRef: LinesRef = useRef({})
+  const circlesRef: CirclesRef = useRef({})
+
   const [roots, updateRoots] = useState<Root[]>([]);
-  const [petals, updatePetals] = useState<Petal[]>([]);
   
   const handleMouseMove: HoverEvent =
     useCallback((e) => {
@@ -110,6 +104,23 @@ export const Graph: GraphComponent = ({
     types: legendData.filter(({ type }) => (typeAccessor(data) || []).includes(type))
   })), [data, typeAccessor, labelAccessor, legendData]);
 
+  const dataChunks = useMemo(() =>
+    chunkArray(mappedData, petalsOptions?.count ?? 6)
+  , [mappedData, petalsOptions?.count]);
+
+  usePetalsPositions({
+    circlesRef,
+    dataChunks,
+    linesRef,
+    position: graphPosition,
+    textsRef,
+    fontSize,
+    innerCircle,
+    petalsOptions,
+    connectionsRef,
+    roots
+  })
+
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -139,23 +150,23 @@ export const Graph: GraphComponent = ({
         `}
       >
         <Connections
-          roots={roots}
-          petals={petals}
+          dataChunks={dataChunks}
           hoveredConnections={hoveredTypes}
           hoveredLabel={hoveredlabel}
+          connectionsRef={connectionsRef}
         />
         <Petals
-          data={mappedData}
-          innerCircle={innerCircle}
-          position={graphPosition}
+          dataChunks={dataChunks}
           options={petalsOptions}
           fontSize={fontSize}
-          updatePetals={updatePetals}
           hoveredLabel={hoveredlabel}
           hoveredTypes={hoveredTypes}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
           offFocuseOpacity={offFocuseOpacity}
+          circlesRef={circlesRef}
+          linesRef={linesRef}
+          textsRef={textsRef}
         />
         <Roots 
           types={legendData}
