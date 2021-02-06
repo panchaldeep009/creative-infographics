@@ -64,17 +64,15 @@ export const Roots: React.FC<RootsProps> = ({
     ]
   }, [types, position.x, rootMaxRadius, maxCount, rootsSpacing]);
 
-  const roots = useMemo(() => 
-    typesWithRadius.map((type) => ({
+  const roots = useMemo(() => {
+    const calculatedRoots = typesWithRadius.map((type) => ({
       ...type,
       x: startingX + type.offsetX,
       y: position.y
-    }))
-  , [typesWithRadius, startingX, position.y]);
-
-  useEffect(() => {
-    updateRoots(roots);
-  }, [updateRoots, roots])
+    }));
+    updateRoots(calculatedRoots);
+    return calculatedRoots;
+  }, [typesWithRadius, updateRoots, startingX, position.y]);
 
   return (
     <g name="roots">

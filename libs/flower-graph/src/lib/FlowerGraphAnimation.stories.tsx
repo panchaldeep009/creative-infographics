@@ -39,6 +39,7 @@ export const WithSpringAnimation: Story<GraphProps<Movie>> = () => {
           data={data.filter(d => d.Genre?.length)}
           labelAccessor={data => data.Title}
           typeAccessor={data => data.Genre?.split(', ') || []} 
+          hue="green"
           graphPosition={{
             x: 300,
             y: 670
